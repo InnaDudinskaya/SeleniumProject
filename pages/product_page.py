@@ -8,8 +8,9 @@ class ProductPage(BasePage):
         super().__init__(driver)
         self.page_url = f'/shop/{product_id}?category={category}'
 
-    def check_url_contains_product(self, product_id):
-        self.check_url_contains(product_id)
+    @staticmethod
+    def get_success_message_loc():
+        return loc.success_message_loc
 
     def check_product_title_is_not_empty(self):
         title = self.find(loc.product_title_loc)
@@ -19,20 +20,13 @@ class ProductPage(BasePage):
         self.check_element_displayed(loc.product_price_loc)
 
     def check_product_image_exists(self):
-        image = self.find(loc.product_image_loc)
-        self.wait.until(lambda driver: image.is_displayed())
-        assert image.is_displayed(), "Product image is not visible"
+        self.check_element_displayed(loc.product_image_loc)
 
     def check_add_to_cart_button_exists(self):
-        element = self.find(loc.add_to_cart_button_loc)
-        assert element.is_displayed(), "Button 'Add to cart' is not displayed"
+        self.check_element_displayed(loc.add_to_cart_button_loc)
 
     def add_to_cart(self):
         self.click(loc.add_to_cart_button_loc)
 
-    def check_success_message_contains(self, expected_text):
-        message = self.find(loc.success_message_loc)
-        self.wait.until(lambda driver: message.is_displayed())
-        actual_text = message.text.strip()
-        assert expected_text in actual_text, \
-            f"Expected '{expected_text}', got '{actual_text}'"
+    def wait_good_added_to_cart(self):
+        self.find(loc.cart_item_added_loc)

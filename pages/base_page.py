@@ -1,6 +1,11 @@
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
+from utils.custom_conditions import UrlContains
+from utils.custom_conditions import TitleContainsIgnoreCase
+from utils.custom_conditions import ElementHasText
+from utils.custom_conditions import ElementIsVisible
+from utils.custom_conditions import ElementIsClickable
 
 
 class BasePage:
@@ -24,21 +29,22 @@ class BasePage:
         return self.wait.until(ec.presence_of_all_elements_located(locator))
 
     def click(self, locator: tuple[str, str]):
-        element = self.wait.until(ec.element_to_be_clickable(locator))
+        element = self.wait.until(ElementIsClickable(locator))
         element.click()
 
     def check_url_contains(self, text: str):
-        self.wait.until(lambda driver: text in driver.current_url)
+        self.wait.until(UrlContains(text))
         assert text in self.driver.current_url
 
     def check_title_contains(self, text: str):
-        self.wait.until(lambda driver: text.lower() in driver.title.lower())
+        self.wait.until(TitleContainsIgnoreCase(text))
         assert text.lower() in self.driver.title.lower()
 
     def check_element_displayed(self, locator: tuple[str, str]):
-        element = self.wait.until(ec.visibility_of_element_located(locator))
+        element = self.wait.until(ElementIsVisible(locator))
         assert element.is_displayed()
 
     def check_element_text(self, expected_text: str, locator: tuple[str, str]):
-        element = self.wait.until(ec.visibility_of_element_located(locator))
+        self.wait.until(ElementHasText(locator, expected_text))
+        element = self.find(locator)
         assert element.text == expected_text
