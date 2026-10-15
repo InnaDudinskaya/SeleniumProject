@@ -4,6 +4,7 @@ import os
 
 sys.path.insert(0, os.path.dirname(__file__))
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from pages.cart_page import CartPage
 from pages.category_page import CategoryPage
 from pages.product_page import ProductPage
@@ -11,7 +12,9 @@ from pages.product_page import ProductPage
 
 @pytest.fixture
 def driver():
-    chrome_driver = webdriver.Chrome()
+    options = Options()
+    options.add_argument('--headless')
+    chrome_driver = webdriver.Chrome(options=options)
     chrome_driver.maximize_window()
     yield chrome_driver
     chrome_driver.quit()
