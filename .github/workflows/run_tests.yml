@@ -1,6 +1,17 @@
 name: Selenium autotests
 
-on: [push]
+on:
+  workflow_dispatch:
+    inputs:
+      deployment_target:
+        description: choose tests set
+        required: true
+        type: choice
+        default: smoke
+        options:
+          - smoke
+          - extended
+          - all
 
 jobs:
   run-tests:
