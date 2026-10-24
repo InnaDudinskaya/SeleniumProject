@@ -1,8 +1,12 @@
+import pytest
+
+@pytest.mark.smoke
 def test_category_page_loads(category_page):
     category_page.open_page()
     category_page.check_url_contains_category('desks-1')
 
 
+@pytest.mark.smoke
 def test_category_page_displays_main_elements(category_page):
     category_page.open_page()
     category_page.check_products_exist()
@@ -11,6 +15,7 @@ def test_category_page_displays_main_elements(category_page):
     category_page.check_categories_dropdown_exists()
 
 
+@pytest.mark.extended
 def test_cart_icon_click(category_page):
     category_page.open_page()
     first_item_cart_number = 2
