@@ -1,3 +1,6 @@
+import pytest
+
+@pytest.mark.smoke
 def test_product_page_main_elements(product_page):
     product_page.open_page()
     product_page.check_url_contains('furn-9999')
@@ -7,6 +10,7 @@ def test_product_page_main_elements(product_page):
     product_page.check_add_to_cart_button_exists()
 
 
+@pytest.mark.extended
 def test_add_product_to_cart(product_page):
     product_page.open_page()
     product_page.add_to_cart()
