@@ -67,10 +67,18 @@ jobs:
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v7
+        with:
+          name: _site
+          path: _site
+          
+      - name: Verify downloaded content
+        run: ls -la _site   
+        
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
           path: _site
+          
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5.0.1      
