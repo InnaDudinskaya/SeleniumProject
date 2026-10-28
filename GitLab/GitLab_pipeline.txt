@@ -1,0 +1,36 @@
+.base_job:
+  when: manual
+  image: python
+  artifacts:
+    when: always
+    expire_in: 10 days
+    paths:
+      - allure-report
+  before_script:
+    - apt-get update && apt-get install -y wget gnupg openjdk-17-jre
+    - pip install --break-system-packages -r requirements.txt
+    - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg
+    - sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
+    - apt-get update && apt-get install -y google-chrome-stable
+    - wget -q -O - https://github.com/allure-framework/allure2/releases/download/2.30.0/allure-2.30.0.tgz | tar -xz -C /opt/ && ln -s /opt/allure-2.30.0/bin/allure /usr/bin/allure
+
+run_all_tests:
+    extends: .base_job
+    script: 
+        - pytest --alluredir=allure-results
+    after_script:
+        - allure generate -c allure-results -o allure-report
+
+run_smoke_tests:
+    extends: .base_job
+    script: 
+        - pytest -m smoke --alluredir=allure-results
+    after_script:
+        - allure generate -c allure-results -o allure-report
+
+run_extended_tests:
+    extends: .base_job
+    script: 
+        - pytest -m extended --alluredir=allure-results
+    after_script:
+        - allure generate -c allure-results -o allure-report   
